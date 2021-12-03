@@ -6,20 +6,34 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { User } from './user.entity';
 import { UserServiceInterface } from './user.service.interface';
 import 'reflect-metadata';
+import { UserRepositoryInterface } from './user.repository.interface';
+import { UserModel } from '.prisma/client';
+import { compare } from 'bcryptjs';
 
 @injectable()
 export class UserService implements UserServiceInterface {
-	constructor(@inject(TYPES.ConfigService) private configService: ConfigServiceInterface) {}
+	constructor(
+		@inject(TYPES.ConfigService)
+		private configService: ConfigServiceInterface,
+		@inject(TYPES.UserRepository)
+		private userRepository: UserRepositoryInterface,
+	) {}
 
-	async createUser(dto: UserRegisterDto): Promise<User | null> {
+	async createUser(dto: UserRegisterDto): Promise<UserModel | null> {
 		const newUser = new User(dto.email, dto.name);
 		const salt = this.configService.get('SALT');
 		await newUser.setPassword(dto.password, +salt);
 
-		return newUser ?? null;
+		const existedUser = await this.userRepository.findOne(dto.email);
+
+		return !existedUser ? await this.userRepository.create(newUser) : null;
 	}
 
 	async validateUser(dto: UserLoginDto): Promise<boolean> {
-		return true;
+		const existedUser = await this.userRepository.findOne(dto.email);
+		if (!existedUser) {
+			return false;
+		}
+		return compare(dto.password, existedUser.password);
 	}
 }

@@ -6,4 +6,5 @@ export const TYPES = {
 	ExceptionFilter: Symbol.for('ExceptionFilter'),
 	ConfigService: Symbol.for('ConfigService'),
 	DatabaseService: Symbol.for('DatabaseService'),
+	UserRepository: Symbol.for('UserRepository'),
 };

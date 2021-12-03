@@ -11,6 +11,8 @@ import { LoggerService } from './logger/logger.service';
 import { TYPES } from './types';
 import { UserController } from './users/user.controller';
 import { UserControllerInterface } from './users/user.interface';
+import { UserRepository } from './users/user.repository';
+import { UserRepositoryInterface } from './users/user.repository.interface';
 import { UserService } from './users/user.service';
 import { UserServiceInterface } from './users/user.service.interface';
 
@@ -23,6 +25,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<DatabaseServiceInterface<PrismaClient>>(TYPES.DatabaseService)
 		.to(PrismaService)
 		.inSingletonScope();
+	bind<UserRepositoryInterface>(TYPES.UserRepository).to(UserRepository).inSingletonScope();
 	bind<App>(TYPES.Application).to(App).inSingletonScope();
 });
 

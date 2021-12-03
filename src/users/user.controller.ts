@@ -25,6 +25,7 @@ export class UserController extends BaseController implements UserControllerInte
 				path: '/login',
 				method: 'post',
 				handler: this.login,
+				middlewares: [new ValidateMiddleware(UserLoginDto)],
 			},
 			{
 				path: '/register',
@@ -35,9 +36,16 @@ export class UserController extends BaseController implements UserControllerInte
 		]);
 	}
 
-	login(req: Request<{}, {}, UserLoginDto>, res: Response, next: NextFunction): void {
-		console.log(req.body);
-		this.ok(res, 'Login');
+	async login(
+		req: Request<{}, {}, UserLoginDto>,
+		res: Response,
+		next: NextFunction,
+	): Promise<void> {
+		const isValid = await this.userService.validateUser(req.body);
+		if (!isValid) {
+			return next(new HttpError(401, 'User is unauthorized. Email or password is wrong'));
+		}
+		this.ok(res, 'Login is valid'); // TODO
 	}
 
 	async register(
@@ -49,6 +57,6 @@ export class UserController extends BaseController implements UserControllerInte
 		if (!result) {
 			return next(new HttpError(422, 'Account is exist. Try another one'));
 		}
-		this.ok(res, { email: result.getEmail() });
+		this.ok(res, { email: result.email, id: result.id });
 	}
 }
