@@ -1,0 +1,8 @@
+# Ignore all files
+*
+# Except
+!migrations/**
+!.gitignore
+!schema.prisma
+# Even they are in subdirectories
+!*/
