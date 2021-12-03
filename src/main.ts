@@ -1,7 +1,10 @@
+import { PrismaClient } from '.prisma/client';
 import { Container, ContainerModule, interfaces } from 'inversify';
 import { App } from './app';
 import { ConfigService } from './config/config.service';
 import { ConfigServiceInterface } from './config/config.service.interface';
+import { DatabaseServiceInterface } from './database/database.service.interface';
+import { PrismaService } from './database/prisma/prisma.service';
 import { ExceptionFilter } from './errors/exception.filter';
 import { LoggerInterface } from './logger/logger.interface';
 import { LoggerService } from './logger/logger.service';
@@ -17,6 +20,9 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<UserControllerInterface>(TYPES.UserController).to(UserController).inSingletonScope();
 	bind<UserServiceInterface>(TYPES.UserService).to(UserService).inSingletonScope();
 	bind<ConfigServiceInterface>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
+	bind<DatabaseServiceInterface<PrismaClient>>(TYPES.DatabaseService)
+		.to(PrismaService)
+		.inSingletonScope();
 	bind<App>(TYPES.Application).to(App).inSingletonScope();
 });
 
