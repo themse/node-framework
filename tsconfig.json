@@ -11,7 +11,9 @@
 		"outDir": "dist",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
-		"types": ["reflect-metadata"]
+		"types": ["reflect-metadata", "jest"],
+		"typeRoots": ["./src/**/types", "./node_modules/@types"]
 	},
-	"include": ["src/**/*"]
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"]
 }
