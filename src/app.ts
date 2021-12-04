@@ -4,6 +4,7 @@ import express, { Express } from 'express';
 import { Server } from 'http';
 import { inject, injectable } from 'inversify';
 import 'reflect-metadata';
+import { AuthMiddleware } from './common/auth.middleware';
 import { ConfigServiceInterface } from './config/config.service.interface';
 import { DatabaseServiceInterface } from './database/database.service.interface';
 import { ExceptionFilterInterface } from './errors/exception.filter.interface';
@@ -31,6 +32,8 @@ export class App {
 
 	useMiddleware(): void {
 		this.app.use(bodyParser.json());
+		const authMiddleware = new AuthMiddleware(this.configService.get('SECRET'));
+		this.app.use(authMiddleware.execute.bind(authMiddleware));
 	}
 
 	useRoutes(): void {
