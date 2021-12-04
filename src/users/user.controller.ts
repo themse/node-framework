@@ -14,6 +14,7 @@ import { UserRegisterDto } from './dto/user-register.dto';
 import { UserControllerInterface } from './user.interface';
 import { ConfigServiceInterface } from '../config/config.service.interface';
 import { UserServiceInterface } from './user.service.interface';
+import { AuthGuard } from '../common/auth.guard';
 
 @injectable()
 export class UserController extends BaseController implements UserControllerInterface {
@@ -41,6 +42,7 @@ export class UserController extends BaseController implements UserControllerInte
 				path: '/info',
 				method: 'post',
 				handler: this.info,
+				middlewares: [new AuthGuard()],
 			},
 		]);
 	}
@@ -71,7 +73,8 @@ export class UserController extends BaseController implements UserControllerInte
 	}
 
 	async info({ user }: Request, res: Response, next: NextFunction): Promise<void> {
-		this.ok(res, { email: user });
+		const userInfo = await this.userService.getUserInfo(user);
+		this.ok(res, { email: userInfo?.email, id: userInfo?.id });
 	}
 
 	// TODO do we really need it here?

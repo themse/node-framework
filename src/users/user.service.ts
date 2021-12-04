@@ -36,4 +36,8 @@ export class UserService implements UserServiceInterface {
 		}
 		return compare(dto.password, existedUser.password);
 	}
+
+	async getUserInfo(email: string): Promise<UserModel | null> {
+		return this.userRepository.findOne(email);
+	}
 }

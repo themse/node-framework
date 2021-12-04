@@ -15,9 +15,9 @@ export class AuthMiddleware implements MiddleWareInterface {
 				req.user = payload.email;
 			} catch (err) {
 				next();
+				return;
 			}
-		} else {
-			next();
 		}
+		next(); //  TODO check
 	}
 }
