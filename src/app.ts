@@ -52,4 +52,8 @@ export class App {
 		this.server = this.app.listen(this.port);
 		this.logger.log('Server is alive', this.port);
 	}
+
+	close(): void {
+		this.server.close();
+	}
 }
